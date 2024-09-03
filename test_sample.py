@@ -1,4 +1,4 @@
-from CommitTest import *
+from CommitExample import *
 import pytest
 
 def test_correct():
