@@ -1,4 +1,8 @@
-def test(x, y):
+def testCommit(x, y):
     return x * y
 
-test(5, 8)
+def test_correct():
+    assert testCommit(2, 3) == 6
+
+def test_wrong():
+    assert testCommit(2, 3) == 6
