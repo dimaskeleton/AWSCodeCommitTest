@@ -1,4 +1,4 @@
-from function_one import *
+from function_example import *
 import pytest
 
 def test_correct():
