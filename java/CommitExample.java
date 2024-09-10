@@ -8,6 +8,6 @@ public class CommitExample {
     public static void main(String[] args) {
         // Example usage
         int result = multiply(2, 3);
-        System.out.println("2 • 3 = " + result);
+        System.out.println("2 x 3 = " + result);
     }
 }
