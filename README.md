@@ -84,5 +84,5 @@ Phases that are run:
 - Compiling Java tests: Compiles CommitExampleTest.java, adding the JUnit library and compiled source files to the classpath
 
 3. Build Phase 
-- Runs the Python tests using pytest and stores the results in JUnit XML format for reporting
+- Runs the Python and Java tests using pytest and JUnit storing the results in JUnit XML format for reporting
 - Test reports from Python and Java tests are stored in the reports/directory, with formats compatible with JUnit XML reporting
