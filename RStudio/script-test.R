@@ -14,7 +14,6 @@ test_that("Testing multiplication 2", {
 
 # Test reports:
 output_file <- "R-test-results.xml"
-
-results <- test_dir("RStudio/tests", reporter = JunitReporter$new(file = output_file))
+results <- test_file("RStudio/script-test.R", reporter = JunitReporter$new(file = output_file))
 
 print("Tests completed, report generated.")
