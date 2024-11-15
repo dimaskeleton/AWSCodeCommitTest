@@ -12,3 +12,9 @@ test_that("Testing multiplication 2", {
   expect_equal(mul(10, 4), 40)
 })
 
+# Test reports:
+output_file <- "R-test-results.xml"
+
+results <- test_dir("RStudio/tests", reporter = JunitReporter$new(file = output_file))
+
+print("Tests completed, report generated.")
