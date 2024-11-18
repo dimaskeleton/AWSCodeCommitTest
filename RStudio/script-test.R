@@ -7,7 +7,7 @@ setwd(script_path)
 
 print(paste("Working directory:", getwd()))
 
-output_file <- "test-results.xml"
+output_file <- file.path(getwd(), "test-results.xml")
 
 results <- test_dir("tests", reporter = JunitReporter$new(file = output_file))
 
