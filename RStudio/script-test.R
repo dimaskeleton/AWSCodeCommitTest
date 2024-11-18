@@ -11,4 +11,4 @@ output_file <- "test-results.xml"
 
 results <- test_dir("tests", reporter = JunitReporter$new(file = output_file))
 
-print(paste("Tests completed, report generated at:", output_file))
+print(paste("Tests completed: ", output_file))
