@@ -1,0 +1,67 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 HelveticaNeue;}
+{\colortbl;\red255\green255\blue255;\red255\green255\blue255;\red13\green110\blue236;}
+{\*\expandedcolortbl;;\cssrgb\c100000\c100000\c100000;\cssrgb\c0\c52549\c94118;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs24 \cf0 \cb2 \expnd0\expndtw0\kerning0
+version: 0.2\cb1 \
+\cb2 \'a0\cb1 \
+\cb2 phases:\cb1 \
+\cb2 \'a0 install:\cb1 \
+\cb2 \'a0\'a0\'a0 runtime-versions:\cb1 \
+\cb2 \'a0\'a0\'a0\'a0\'a0 docker: latest\cb1 \
+\cb2 \'a0\'a0\'a0 commands:\cb1 \
+\cb2 \'a0\cb1 \
+\cb2 \'a0\'a0\'a0\'a0\'a0 # Sets up python venv\cb1 \
+\cb2 \'a0\'a0\'a0\'a0\'a0\'a0- echo "Setting up Python virtual environment"\cb1 \
+\cb2 \'a0\'a0\'a0\'a0\'a0 - python3 -m venv venv\cb1 \
+\cb2 \'a0\'a0\'a0\'a0\'a0 - . venv/bin/activate\cb1 \
+\cb2 \'a0\'a0\'a0\'a0\'a0 - pip install --upgrade pip\cb1 \
+\cb2 \'a0\'a0\'a0\'a0\'a0 - pip install pytest\cb1 \
+\cb2 \'a0\cb1 \
+\cb2 \'a0\'a0\'a0\'a0\'a0 # Installs R libraries\cb1 \
+\cb2 \'a0\cb1 \
+\cb2 \'a0\'a0\'a0\'a0\'a0 # Downloads JUnit\cb1 \
+\cb2 \'a0\'a0\'a0\'a0\'a0\'a0- echo "Downloading JUnit"\cb1 \
+\cb2 \'a0\'a0\'a0\'a0\'a0 - mkdir -p lib\cb1 \
+\cb2 \'a0\'a0\'a0\'a0\'a0 - curl -Lo lib/junit-platform-console-standalone.jar {\field{\*\fldinst{HYPERLINK "https://nam12.safelinks.protection.outlook.com/?url=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Forg%2Fjunit%2Fplatform%2Fjunit-platform-console-standalone%2F1.7.1%2Fjunit-platform-console-standalone-1.7.1.jar&data=05%7C02%7Cdimitri.short%40student.shu.edu%7Cc920fb85cbb449a8d47808dd81d8480b%7C51f07c2253b744dfb97ca13261d71075%7C1%7C0%7C638809488097732898%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=WavdjEmnup7x%2FMHZwU9bDYE4MFF6GLbh1KoO2j8U8sI%3D&reserved=0"}}{\fldrslt \cf3 \ul \ulc3 https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.7.1/junit-platform-console-standalone-1.7.1.jar}}\cb1 \
+\cb2 \'a0\cb1 \
+\cb2 \'a0 pre_build:\cb1 \
+\cb2 \'a0\'a0\'a0 commands:\cb1 \
+\cb2 \'a0\'a0\'a0\'a0\'a0 - echo "Compiling Java source and tests"\cb1 \
+\cb2 \'a0\'a0\'a0\'a0\'a0 - mkdir -p out\cb1 \
+\cb2 \'a0\cb1 \
+\cb2 \'a0 build:\cb1 \
+\cb2 \'a0\'a0\'a0 commands:\cb1 \
+\cb2 \'a0\'a0\'a0\'a0\'a0 # Runs python tests in the venv\cb1 \
+\cb2 \'a0\'a0\'a0\'a0\'a0\'a0- echo "Running Python tests:"\cb1 \
+\cb2 \'a0\'a0\'a0\'a0\'a0 - . venv/bin/activate\cb1 \
+\cb2 \'a0\'a0\'a0\'a0\'a0 - python -m pytest --junitxml=reports/python-results.xml\cb1 \
+\cb2 \'a0\cb1 \
+\cb2 \'a0\'a0\'a0\'a0\'a0 - echo "Running Java tests:"\cb1 \
+\cb2 \'a0\cb1 \
+\cb2 \'a0\'a0\'a0\'a0\'a0 - echo "Running R tests:"\cb1 \
+\cb2 \'a0\cb1 \
+\cb2 artifacts:\cb1 \
+\cb2 \'a0 files:\cb1 \
+\cb2 \'a0\'a0\'a0 - '**/*'\cb1 \
+\cb2 \'a0\cb1 \
+\cb2 reports:\cb1 \
+\cb2 \'a0 pytest_reports:\cb1 \
+\cb2 \'a0\'a0\'a0 files:\cb1 \
+\cb2 \'a0\'a0\'a0\'a0\'a0 - "python-results.xml"\cb1 \
+\cb2 \'a0\'a0\'a0 base-directory: "reports"\cb1 \
+\cb2 \'a0\'a0\'a0 file-format: JUNITXML\cb1 \
+\cb2 \'a0 junit_reports:\cb1 \
+\cb2 \'a0\'a0\'a0 files:\cb1 \
+\cb2 \'a0\'a0\'a0\'a0\'a0 - "java/*.xml"\cb1 \
+\cb2 \'a0\'a0\'a0 base-directory: "reports"\cb1 \
+\cb2 \'a0\'a0\'a0 file-format: JUNITXML\cb1 \
+\cb2 \'a0 r_reports:\cb1 \
+\cb2 \'a0\'a0\'a0 files:\cb1 \
+\cb2 \'a0\'a0\'a0\'a0\'a0 - "test-results.xml"\cb1 \
+\cb2 \'a0\'a0\'a0 base-directory: "RStudio"\cb1 \
+\cb2 \'a0\'a0\'a0 file-format: JUNITXML}
