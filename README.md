@@ -1,88 +1,103 @@
-This repository contains Python and Java code used to build/test using AWS codebuild (R with docker to be added)
-It is configured to do the following:
-
-1. Install the necessary runtime environments
-2. Compile and run tests for both Python and Java code.
-3. Creates test reports in JUnit format for both java and python
-
+AWS CI/CD Pipeline Documentation
+ 
+This repository shows an automated CI/CD pipeline built using AWS CodePipeline and AWS CodeBuild, integrating Python, Java, and R. This project automates the process of retrieving code from a Git server, running tests in a secure containerized AWS environment, which then generates visualized test reports.
+ 
+The entire workflow is implemented using AWS services, making AWS the main foundation of the pipeline, ensuring that the code flows securely and efficiently from version control to deployment.
+ 
+The goal is to implement a complete deployment pipeline using AWS to:
+- Automate testing and deployment of scripts
+- Fetch code securely through an AWS VPN from a Git server
+- Run tests in a Docker enviroment using AWS CodeBuild
+- Generate and collect test reports in JUnit XML
+ 
 Structure of the repository:
-
-main-directory
+main-directory/
 |
+|- buildspec.yml
 |
---- > Buildspec.yml (AWS Codebuild runtime specification)
+|- python/
+|              |
+|               |- test_sample.py
 |
+|- java/
+|              |
+|              |- CommitExampleTest.java
 |
---- > python/ (Directory for python code and python tests)
-|    |
-|    |
-|    ---> test_sample.py (Python file with the tests to be run)
-|
-|
---- > java/ (Directory for java code and java tests)
-    |
-    |
-    --- > CommitExampleTest.java (Java file with the tests to be run)
-
-
-
-The buildspec controls how the AWS Codebuild module builds and tests the code in the repository
-This is the current buildspec:
-
-            version: 0.2
-
-            phases:
-            install:
-                runtime-versions:
-                python: 3.9
-                java: corretto11
-                commands:
-                - pip3 install pytest
-                - mkdir -p lib
-                - curl -Lo lib/junit-platform-console-standalone.jar https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.7.1/junit-platform-console-standalone-1.7.1.jar
-
-            pre_build:
-                commands:
-                - echo "Compiling Java sources:"
-                - mkdir -p out
-                - javac -d out java/CommitExample.java
-                - echo "Compiling Java tests:"
-                - javac -cp lib/junit-platform-console-standalone.jar:out -d out java/CommitExampleTest.java
-
-            build:
-                commands:
-                - echo "Running Python tests:"
-                - python -m pytest --junitxml=reports/python-results.xml
-                - echo "Running Java tests:"
-                - java -jar lib/junit-platform-console-standalone.jar -cp out --select-class CommitExampleTest --reports-dir=reports/java
-
-            artifacts:
-            files:
-                - '*...      
-
-                reports:
-                pytest_reports:
-                files:
-                    - "python-results.xml"
-                base-directory: "reports"
-                file-format: JUNITXML
-                junit_reports:
-                files:
-                    - "java/*.xml"
-                base-directory: "reports"
-                file-format: JUNITXML
-  
-Phases that are run: 
-
-1. Installation
-- Installs Python 3.9 and Java Corretto 11
-- Installs pytest for running Python tests
-- Downloads the junit-platform-console-standalone JAR file needed for running JUnit tests in Java 
-
-2. Pre-Build
-- Compiling Java sources: Compiles CommitExample.java to the out directory
-- Compiling Java tests: Compiles CommitExampleTest.java, adding the JUnit library and compiled source files to the classpath
-
-3. Build Phase 
-- Runs the Python and Java tests using pytest and JUnit storing the results in JUnit XML format for reporting
-- Test reports from Python and Java tests are stored in the reports/directory, with formats compatible with JUnit XML reporting
+|- RStudio/
+|              |
+|               |- script-test.R
+ 
+ 
+Services Used:
+- AWS CodePipeline: Automates the full CI/CD workflow: pulls the code -> initiates build -> deploys based on results
+- AWS CodeBuild: Executes the build and runs the tests in Docker containers based on the buildspec.yml file
+- AWS S3: Stores build artifacts and test results
+- AWS VPN: Provides secure access to the Git server
+- Git Server: Hosts the source code and triggers automatic builds on change
+ 
+Current BuildSpec:
+version: 0.2
+ 
+phases:
+  install:
+    runtime-versions:
+      docker: latest
+    commands:
+ 
+      # Sets up python venv
+      - echo "Setting up Python virtual environment"
+      - python3 -m venv venv
+      - . venv/bin/activate
+      - pip install --upgrade pip
+      - pip install pytest
+ 
+      # Installs R libraries
+ 
+      # Downloads JUnit
+      - echo "Downloading JUnit"
+      - mkdir -p lib
+      - curl -Lo lib/junit-platform-console-standalone.jar https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.7.1/junit-platform-console-standalone-1.7.1.jar
+ 
+  pre_build:
+    commands:
+      - echo "Compiling Java source and tests"
+      - mkdir -p out
+ 
+  build:
+    commands:
+      # Runs python tests in the venv
+      - echo "Running Python tests:"
+      - . venv/bin/activate
+      - python -m pytest --junitxml=reports/python-results.xml
+ 
+      - echo "Running Java tests:"
+ 
+      - echo "Running R tests:"
+ 
+artifacts:
+  files:
+    - '**/*'
+ 
+reports:
+  pytest_reports:
+    files:
+      - "python-results.xml"
+    base-directory: "reports"
+    file-format: JUNITXML
+  junit_reports:
+    files:
+      - "java/*.xml"
+    base-directory: "reports"
+    file-format: JUNITXML
+  r_reports:
+    files:
+      - "test-results.xml"
+    base-directory: "RStudio"
+    file-format: JUNITXML
+ 
+ 
+Phases of the build:
+- Installation sets up the environment, activates Python venv, and installs dependencies
+- Pre-Build compiles Java source code and test files using JUnit classpath
+- Build/Test executes automated tests for Python, Java, and R
+- Reports collect the test results and output them in JUnit XML format for AWS CodeBuild reporting
